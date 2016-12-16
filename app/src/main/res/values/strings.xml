@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">GameSpot</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in_with_email">Sign In with Email</string>
+    <string name="sign_up_with_email">Sign Up with Email</string>
+    <string name="sign_in_with_account">Sign In with an Account</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone number</string>
+    <string name="dob">Select Date of Birth</string>
+    <string name="select_picture">Select a profile picture</string>
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+
+
+
+
+
+</resources>

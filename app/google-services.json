@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "579638339087",
+    "firebase_url": "https://gamespot-4605a.firebaseio.com",
+    "project_id": "gamespot-4605a",
+    "storage_bucket": "gamespot-4605a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579638339087:android:4add7cf7ee222eef",
+        "android_client_info": {
+          "package_name": "antrix.com.gamespot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "579638339087-98df3lhcdet7lsqir43ghcbvevn0t6sk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCngy77prudjG7boMyhKRtcLTQF8xIzbcI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "579638339087-98df3lhcdet7lsqir43ghcbvevn0t6sk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
