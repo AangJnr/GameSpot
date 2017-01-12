@@ -6,27 +6,29 @@
         <item
             android:id="@+id/home"
             android:icon="@drawable/ic_home_black_24dp"
-            android:title="Action"
+            android:title="Home"
         />
         <item
             android:id="@+id/games"
             android:icon="@drawable/ic_videogame_asset_black_24dp"
-            android:title="Favorites"/>
+            android:title="Arcade"/>
+        <item
+            android:id="@+id/settings"
+            android:title="Settings"
+            android:icon="@drawable/ic_settings_black_24dp"/>
 
     </group>
+
+
 
     <item android:title="">
         <menu>
 
             <item
-                android:id="@+id/settings"
-                android:title="Settings"
-                android:icon="@drawable/ic_settings_black_24dp"/>
-
-            <item
                 android:id="@+id/sign_out"
-                android:title="Log out"/>
+                android:title="Log out" />
         </menu>
     </item>
+
 
 </menu>

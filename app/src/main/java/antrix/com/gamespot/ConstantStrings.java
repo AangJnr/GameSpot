@@ -18,12 +18,8 @@ public class ConstantStrings {
     public static String USER_TOKEN = "userToken";
     public static String USER_PHOTO_LOCAL_URL = "userProfilePhotoLocal";
     public static String USER_PHOTO_CLOUD_URL = "userProfilePhotoCloud";
-    public static String THEME = "theme";
-    public final static int LIGHT_THEME = 1;
-    public final static int DARK_THEME = 2;
-    public static Boolean IS_NIGHT_MODE = null;
 
-
+    public static String IS_NIGHT_MODE = "isNightMode";
 
 
 

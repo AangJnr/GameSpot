@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base application theme. -->
+
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -11,12 +12,15 @@
         <item name="android:textColorPrimaryInverse">@color/textColorPrimaryLightInverted</item>
         <item name="textColorSecondaryInverse">@color/textColorSecondaryLightInverted</item>
         <item name="backgroundColor">@color/colorPrimary</item>
-        <item name="bottomSheetBackgroundColor">@color/bottom_sheet_light</item>
         <item name="fab_label_background_color">@color/fab_label_background_color_light</item>
+        <item name="lightStatusBar">true</item>
+        <item name="bottomSheetBackgroundColor">@color/bottom_sheet_light</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="drawerArrowStyle">@style/DrawerIcon</item>
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>
         <item name="alertDialogTheme">@style/AppAlertDialog</item>
+
 
 
     </style>
@@ -37,6 +41,8 @@
         <item name="backgroundColor">@color/colorPrimaryInverted</item>
         <item name="bottomSheetBackgroundColor">@color/bottom_sheet_dark</item>
         <item name="fab_label_background_color">@color/fab_label_background_color_dark</item>
+        <item name="lightStatusBar">false</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="drawerArrowStyle">@style/DrawerIcon</item>
         <item name="android:windowBackground">@color/colorPrimaryInverted</item>
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>
@@ -47,85 +53,15 @@
 
 
 
-    <style name="AppTheme.NoActionBar" >
+
+
+    <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/lightStatusBar</item>
     </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="AppTheme" />
-
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-
-
-    <style name="menu_labels_style">
-        <item name="android:background">?attr/fab_label_background_color</item>
-        <item name="android:textColor">?attr/textColorSecondary</item>
-        <item name="android:padding">4dp</item>
-
-    </style>
-
-    <style name="dialog_animation">
-        <!-- <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
-         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
- -->
-    </style>
-
-
-    <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
-
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="textColorPrimary">@color/textColorPrimaryLight</item>
-        <item name="textColorSecondary">@color/textColorSecondaryLight</item>
-        <item name="textColorTertiary">@color/textColorTertiaryLight</item>
-        <item name="android:textColorPrimaryInverse">@color/textColorPrimaryLightInverted</item>
-        <item name="textColorSecondaryInverse">@color/textColorSecondaryLightInverted</item>
-        <item name="backgroundColor">@color/colorPrimary</item>
-        <item name="fab_label_background_color">@color/fab_label_background_color_light</item>
-    </style>
-
-
-
-
-    <style name="ErrorText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textStyle">italic</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/text_white_87</item>
-    </style>
-
-    <style name="MyEditText" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/divider</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
-        <item name="colorControlHighlight">@color/colorPrimary</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="colorAccent">@color/colorPrimary</item>
-
-    </style>
-
-    <style name="TextLabel" parent="TextAppearance.Design.Hint">
-        <item name="android:textSize">13sp</item>
-    </style>
-
-    <style name="LogIn" parent="AppTheme">
-        <item name="android:windowSoftInputMode">adjustPan</item>
-
-    </style>
-
-    <style name="CustomToolbar" parent ="AppTheme">
-        <item name="android:textColorSecondary">?attr/textColorSecondary</item>
-        <item name="colorControlNormal">?attr/colorPrimary</item>
-
-
-    </style>
-
-
 
     <style name="DrawerIcon" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">?attr/textColorPrimary</item>
@@ -134,19 +70,17 @@
 
     <style name="AppPreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
         <item name="preferenceFragmentCompatStyle">@style/AppPreferenceFragmentCompatStyle</item>
+        <item name="android:titleTextColor">?attr/textColorPrimary</item>
         <item name="android:textColorPrimary">?attr/textColorPrimary</item>
         <item name="android:textColorSecondary">?attr/textColorSecondary</item>
         <item name="android:textColorTertiary">?attr/textColorTertiary</item>
     </style>
-
-
 
     <style name="AppAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <!-- To tint the buttons -->
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/textColorPrimaryLight</item>
         <item name="android:itemPadding">@dimen/alert_def_padding</item>
-
     </style>
 
 
@@ -156,6 +90,7 @@
         <item name="android:background">@color/colorPrimaryInverted</item>
         <item name="android:itemPadding">@dimen/alert_def_padding</item>
 
+
     </style>
 
 
@@ -164,5 +99,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+
+    <style name="AppPreferenceFragmentCompatStyle" parent="@style/PreferenceFragment.Material">
+
+
+    </style>
 
 </resources>

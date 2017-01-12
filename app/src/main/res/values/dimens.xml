@@ -7,11 +7,15 @@
     <dimen name="spacing_2">32dp</dimen>
     <dimen name="spacing_3">64dp</dimen>
     <dimen name="login_logo_size">72dp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
     <dimen name="text_size_normal">14sp</dimen>
-    <dimen name="text_size_title">22sp</dimen>
+    <dimen name="text_size_title">24sp</dimen>
     <dimen name="profile_pic_setup_logo_size">120dp</dimen>
     <dimen name="drawer_header_height">190dp</dimen>
     <dimen name="drawer_header_textsize">20sp</dimen>
     <dimen name="drawer_header_text_spacing">@dimen/spacing_normal</dimen>
+
+    <dimen name="alert_def_padding">18dp</dimen>
+
 
 </resources>

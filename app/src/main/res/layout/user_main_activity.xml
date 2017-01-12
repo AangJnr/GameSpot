@@ -10,44 +10,96 @@
     android:background="?attr/backgroundColor"
     tools:context=".userClasses.UserMainActivity">
 
+<android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
+
+
+    <include layout="@layout/activity_maps"/>
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:id="@+id/cord_lay"
-        android:orientation="vertical"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="80dp"
+        android:background="?attr/colorPrimary"
+        android:gravity="end|bottom"
+        app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+        android:id="@+id/app_bar"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="end"
+            app:titleTextColor="?attr/textColorPrimary"
+            app:popupTheme="@style/Theme.AppCompat.NoActionBar"
+            >
 
 
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <TextView
+                android:id="@+id/app_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:layout_centerInParent="true"
+                android:textColor="?attr/textColorPrimary"
+                android:fontFamily="sans-serif-smallcaps"
+                style="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                />
+
+
+        </android.support.v7.widget.Toolbar>
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+
+
+    <!-- bottom sheet layout -->
+    <RelativeLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:behavior_peekHeight="100dp"
+        android:layout_margin="@dimen/spacing_normal"
+        app:behavior_hideable="true"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+        android:elevation="7dp"
+        android:background="?attr/bottomSheetBackgroundColor">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:titleTextColor="?attr/textColorPrimary"
-                app:elevation="0dp"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
-                app:popupTheme="@style/Theme.AppCompat.NoActionBar"
-                >
+                android:layout_height="match_parent"
+                android:text="@string/title"
+                android:textSize="16sp"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:textColor="?attr/textColorPrimary"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:textAllCaps="true"
+                android:padding="16dp"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/ipsum"
+                android:padding="16dp"
+                android:textColor="?attr/textColorSecondary"
+                android:textSize="16sp"/>
+        </LinearLayout>
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
 
-                <TextView
-                    android:id="@+id/app_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_name"
-                    android:textColor="?attr/textColorPrimary"
-                    android:layout_centerVertical="true"
-                    style="@style/Base.TextAppearance.AppCompat.Title"
-                    />
-            </android.support.v7.widget.Toolbar>
-
-
-
-
-
-    </android.support.design.widget.CoordinatorLayout>
 
 
     <android.support.design.widget.NavigationView
@@ -55,6 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:fitsSystemWindows="true"
         android:background="?attr/backgroundColor"
         app:itemTextColor="?attr/textColorPrimary"
         app:itemIconTint="?attr/textColorTertiary"

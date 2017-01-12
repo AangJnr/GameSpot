@@ -23,13 +23,23 @@
         />
 
 
+
+    <View
+        android:id="@+id/sel_photo_view"
+        android:layout_width="@dimen/profile_pic_setup_logo_size"
+        android:layout_height="@dimen/profile_pic_setup_logo_size"
+        android:clickable="true"
+        android:layout_centerInParent="true"
+        android:background="?attr/selectableItemBackground"/>
+
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/select_photo"
         android:layout_width="@dimen/profile_pic_setup_logo_size"
         android:layout_height="@dimen/profile_pic_setup_logo_size"
-        android:layout_below="@id/textView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/spacing_2"
+        android:clickable="false"
+        android:background="?attr/selectableItemBackground"
+        android:layout_centerInParent="true"
         app:civ_border_color="@color/text_white_87"
         app:civ_border_width="3dp"
         android:src="@drawable/select_photo_2"

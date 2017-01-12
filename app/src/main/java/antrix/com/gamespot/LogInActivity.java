@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -26,6 +27,7 @@ import java.util.List;
 public class LogInActivity extends AppCompatActivity {
 
     static Boolean isSignUpPage;
+    static ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +35,20 @@ public class LogInActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow(); // in Activity's onCreate() for instance
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            w.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_sign_up);
 
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.signup_viewpager);
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager = (ViewPager) findViewById(R.id.signup_viewpager);
+        final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new LogInFragment());
         adapter.addFrag(new SignUpFragment());
         viewPager.setAdapter(adapter);
+        viewPager.setPageTransformer(true, new LogInPageTransformer());
+
 
 
 
@@ -57,10 +63,10 @@ public class LogInActivity extends AppCompatActivity {
 
                 if(position == 0){
 
-                    isSignUpPage = true;
+                    isSignUpPage = false;
                 }else{
 
-                    isSignUpPage = false;
+                    isSignUpPage = true;
                 }
 
             }
@@ -86,6 +92,8 @@ public class LogInActivity extends AppCompatActivity {
         moveTaskToBack(true);
 
     }
+
+
 
     public void showSoftKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(this.INPUT_METHOD_SERVICE);
@@ -127,6 +135,22 @@ public class LogInActivity extends AppCompatActivity {
         return yes;
     }
 
+
+    public void moveToNext () {
+        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
+
+    }
+
+
+    public void moveToPrevious () {
+        viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);
+
+    }
+
+    public static int getCurrentPage(){
+       return  viewPager.getCurrentItem();
+
+    }
 
 
 

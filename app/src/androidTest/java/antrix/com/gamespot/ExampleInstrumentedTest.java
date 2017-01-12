@@ -22,5 +22,8 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("antrix.com.gamespot", appContext.getPackageName());
+
     }
 }
+
+

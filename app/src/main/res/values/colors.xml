@@ -2,8 +2,8 @@
     //Light Colors
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#ffffff</color>
-    <color name="colorAccent">#e43a57</color>
-    <color name="fabStatePressed">#c44b71</color>
+    <color name="colorAccent">#7b2031</color>
+    <color name="fabStatePressed">#732031</color>
     <color name="textColorPrimaryLight">#000</color>
     <color name="textColorSecondaryLight">#363636</color>
     <color name="textColorTertiaryLight">#787878</color>
@@ -15,8 +15,10 @@
 
 
     //Inverted colors
-    <color name="colorPrimaryInverted">#272727</color>
-    <color name="colorPrimaryDarkInverted">#272727</color>
+    <!--<color name="colorPrimaryInverted">#24272b</color>
+    <color name="colorPrimaryDarkInverted">#24272b</color>-->
+    <color name="colorPrimaryInverted">#181010</color>
+    <color name="colorPrimaryDarkInverted">#181010</color>
     <color name="textColorPrimaryLightInverted">#fff</color>
     <color name="textColorSecondaryLightInverted">#bebebe</color>
     <color name="textColorTertiaryLightInverted">#808080</color>
@@ -53,8 +55,14 @@
     <color name="drawable_grey">#555b55</color>
     <color name="viewBg">#f1f5f8</color>
 
-    <color name="actualColorPrimary">#223689</color>
-    <color name="actualColorPrimary_2">#213260</color>
+    <color name="gradient_color_2">#223689</color>
+    <color name="gradient_color_1">#213260</color>
+    <color name="gradient_color_3">#491446</color>
+
+
+    <color name="bottom_sheet_light">#ebeef0</color>
+    <color name="bottom_sheet_dark">#2e2e2e</color>
+
 
 
 

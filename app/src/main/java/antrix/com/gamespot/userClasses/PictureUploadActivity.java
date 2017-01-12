@@ -18,11 +18,17 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.StorageReference;
@@ -42,6 +48,8 @@ public class PictureUploadActivity extends AppCompatActivity implements View.OnC
 
     CircleImageView select_photo;
 
+    private DatabaseReference users_database;
+
     String decodedString;
     int PERMISSION_STORAGE = 2;
     public static int RESULT_LOAD_IMG = 1;
@@ -52,16 +60,25 @@ public class PictureUploadActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onCreate (Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            w.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         setContentView(R.layout.profile_pic_layout);
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
+        users_database = FirebaseDatabase.getInstance().getReference();
+
         sharedPreferences = getDefaultSharedPreferences(this);
 
         uid = sharedPreferences.getString(ConstantStrings.USER_UID, null);
 
         select_photo = (CircleImageView) findViewById(R.id.select_photo);
-        select_photo.setOnClickListener(this);
+        View sel_photo_view = (View) findViewById(R.id.sel_photo_view);
+        sel_photo_view.setOnClickListener(this);
+
         findViewById(R.id.next).setOnClickListener(this);
 
 
@@ -81,7 +98,7 @@ public class PictureUploadActivity extends AppCompatActivity implements View.OnC
 
         switch (view.getId()) {
 
-            case R.id.select_photo:
+            case R.id.sel_photo_view:
 
                 if(!hasPermissions(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
                     ActivityCompat.requestPermissions(PictureUploadActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_STORAGE);
@@ -165,21 +182,53 @@ public class PictureUploadActivity extends AppCompatActivity implements View.OnC
 
                         if(uid != null && !uid.isEmpty()){
 
-                            StorageReference profilePhoto = mStorageRef.child(uid).child("profile_photo.jpg");
-                            profilePhoto.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            StorageReference profilePhotoStorage = mStorageRef.child(uid).child("profile_photo.jpg");
+                            profilePhotoStorage.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                                     Toast.makeText(PictureUploadActivity.this, "Success", Toast.LENGTH_SHORT).show();
 
                                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                    String photoUrl = String.valueOf(downloadUrl);
+
                                     SharedPreferences.Editor editor;
                                     editor = sharedPreferences.edit();
-                                    editor.putString(ConstantStrings.USER_PHOTO_LOCAL_URL, String.valueOf(downloadUrl));
+                                    editor.putString(ConstantStrings.USER_PHOTO_LOCAL_URL, photoUrl);
                                     editor.apply();
 
 
-                                    startUserActivity();
+
+
+
+
+                                    users_database.child("users").child(uid).child("photo").setValue(photoUrl)
+                                            .addOnCompleteListener(PictureUploadActivity.this, new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+
+                                                    if (task.isSuccessful()) {
+
+                                                        startUserActivity();
+
+
+                                                    } else {
+                                                        startUserActivity();
+
+                                                         }
+
+                                                }
+                                            });
+
+
+
+
+
+
+
+
+
+
 
                                 }
                             }).addOnFailureListener(new OnFailureListener() {

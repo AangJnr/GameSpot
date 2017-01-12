@@ -1,6 +1,5 @@
 package antrix.com.gamespot;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
@@ -20,6 +19,9 @@ public class Utility {
     private static int screenWidth = 0;
     private static int screenHeight = 0;
 
+
+
+
     public static boolean checkInternetConnection(Context context) {
         ConnectivityManager conMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         // ARE WE CONNECTED TO THE NET
@@ -37,13 +39,17 @@ public class Utility {
 
 
 
-    public static void setTheme(Context context, int theme_id) {
+    public static void setTheme(Context context, boolean theme_id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        prefs.edit().putInt(ConstantStrings.THEME, theme_id).apply();
+        prefs.edit().putBoolean(ConstantStrings.IS_NIGHT_MODE, theme_id).apply();
     }
-    public static int getTheme(Context context) {
+
+
+
+
+    public static boolean isNightMode(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getInt(ConstantStrings.THEME, -1);
+        return prefs.getBoolean(ConstantStrings.IS_NIGHT_MODE, false);
     }
 
 
@@ -73,17 +79,15 @@ public class Utility {
 
 
     public static void updateTheme(AppCompatActivity context) {
-        if (getTheme(context) <= ConstantStrings.LIGHT_THEME) {
+        if (!isNightMode(context)) {
             context.setTheme(R.style.AppTheme);
-            ConstantStrings.IS_NIGHT_MODE = false;
 
             if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
                 context.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
             }
-        } else if (getTheme(context) == ConstantStrings.DARK_THEME) {
+        } else if (isNightMode(context)) {
             context.setTheme(R.style.AppTheme_Dark);
-            ConstantStrings.IS_NIGHT_MODE = true;
 
             if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
                 context.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -91,6 +95,23 @@ public class Utility {
             }
         }
     }
+
+
+    public static boolean isUserFirstRun(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(ConstantStrings.IS_USER_SIGNED_IN, Boolean.FALSE);
+    }
+
+    public static boolean isGameRetailerFirstRun(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(ConstantStrings.IS_GAME_CENTER_SIGNED_IN, Boolean.FALSE);
+    }
+
+    public static boolean isGameCenterFirstRun(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(ConstantStrings.IS_RETAILER_SIGNED_IN, Boolean.FALSE);
+    }
+
 
 
 }

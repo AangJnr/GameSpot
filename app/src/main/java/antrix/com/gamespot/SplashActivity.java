@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -25,7 +26,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
  * Created by aangjnr on 13/12/2016.
  */
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends AppCompatActivity {
 
 
     Thread splashTread;
@@ -48,22 +49,20 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        Utility.updateTheme(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow(); // in Activity's onCreate() for instance
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            w.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.splash_activity);
 
 
         sharedPreferences = getDefaultSharedPreferences(this);
-
-        isUser_first_run = sharedPreferences.getBoolean(ConstantStrings.IS_USER_SIGNED_IN, Boolean.FALSE);
-        isGame_retailer_first_run = sharedPreferences.getBoolean(ConstantStrings.IS_RETAILER_SIGNED_IN, Boolean.FALSE);
-        isGame_center_first_run = sharedPreferences.getBoolean(ConstantStrings.IS_GAME_CENTER_SIGNED_IN, Boolean.FALSE);
-
-
-
+        isUser_first_run = Utility.isUserFirstRun(this);
+        isGame_retailer_first_run = Utility.isGameRetailerFirstRun(this);
+        isGame_center_first_run = Utility.isGameCenterFirstRun(this);
 
         StartAnimations();
 

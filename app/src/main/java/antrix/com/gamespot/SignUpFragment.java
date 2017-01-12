@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
@@ -45,15 +46,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
+import antrix.com.gamespot.userClasses.PictureUploadActivity;
 import antrix.com.gamespot.userClasses.User;
 import antrix.com.gamespot.userClasses.UserMainActivity;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
-
-/**
- * Created by AangJnr on 9/2/16.
- */
 public class SignUpFragment extends Fragment {
 
     String TAG = "SignUp Activity Class";
@@ -61,10 +59,10 @@ public class SignUpFragment extends Fragment {
 
 
     View rootView;
-    EditText _emailText, _passwordText, _nameText, _phone_noText;
     TextInputLayout email_layout, password_layout, name_layout, phone_no_layout;
     RelativeLayout selectDate;
     LinearLayout signUp;
+    TextView sign_in_text;
 
     ProgressDialog progressDialog;
 
@@ -92,6 +90,10 @@ public class SignUpFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mAuth = FirebaseAuth.getInstance();
+        users_database = FirebaseDatabase.getInstance().getReference();
+        sharedPreferences = getDefaultSharedPreferences(getActivity());
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
     }
 
@@ -101,12 +103,9 @@ public class SignUpFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.signup_fragment_layout, container, false);
 
-        mAuth = FirebaseAuth.getInstance();
-
-        users_database = FirebaseDatabase.getInstance().getReference();
-        sharedPreferences = getDefaultSharedPreferences(getActivity());
 
 
+        sign_in_text = (TextView) rootView.findViewById(R.id.sign_in_text);
 
 
         name_layout = (TextInputLayout) rootView.findViewById(R.id.user_name_layout);
@@ -121,6 +120,7 @@ public class SignUpFragment extends Fragment {
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
         progressDialog.setMessage("Creating Account...");
 
         Calendar calendar = Calendar.getInstance();
@@ -144,18 +144,36 @@ public class SignUpFragment extends Fragment {
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                name = _nameText.getText().toString();
-                email = _emailText.getText().toString();
-                password = _passwordText.getText().toString();
-                phone = _phone_noText.getText().toString();
+                if(Utility.checkInternetConnection(getActivity())) {
+                name = name_layout.getEditText().getText().toString();
+                email = email_layout.getEditText().getText().toString();
+                password = password_layout.getEditText().getText().toString();
+                phone = phone_no_layout.getEditText().getText().toString();
 
 
                 if (!signUpValidate()) {
                     Toast.makeText(getActivity(), "Please provide valid info", Toast.LENGTH_LONG).show();
-                    return;
+
 
                 }else signUp();
 
+
+
+
+
+
+                }else Toast.makeText(getActivity(), "Please ensure you have an Internet Connection and try again", Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
+
+
+        sign_in_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ((LogInActivity)getActivity()).moveToPrevious();
 
             }
         });
@@ -165,7 +183,9 @@ public class SignUpFragment extends Fragment {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+
+                Log.i("SignUp - isSignUpPage()", String.valueOf(LogInActivity.getCurrentPage()));
+                if (user != null && LogInActivity.getCurrentPage() != 0) {
                     // User is signed in
                     //if (progressDialog != null) progressDialog.dismiss();
 
@@ -183,10 +203,15 @@ public class SignUpFragment extends Fragment {
                         int _age = presentYear - year;
 
                         final String age = String.valueOf(_age);
+                        String photo = "https://firebasestorage.googleapis.com/v0/b/ordstores-56992.appspot.com/o/khOYGAwM5HU5DFTySEwR5EGdL763%2Fmerchant_logo.jpg?alt=media&token=0b55df18-9d9f-4680-9ed8-0a141b190f8a";
 
 
-
-                        User _user = new User(name, email, phone, age);
+                        User _user = new User();
+                        _user.setUserName(name);
+                        _user.setUserAge(age);
+                        _user.setUserEmail(email);
+                        _user.setUserPhone(phone);
+                        _user.setUserPhoto(photo);
                         // Write a userdata to the database
 
 
@@ -275,7 +300,6 @@ public class SignUpFragment extends Fragment {
 
         // TODO: Implement your own signup logic here.
 
-
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -283,7 +307,8 @@ public class SignUpFragment extends Fragment {
 
                         if (!task.isSuccessful()) {
                             progressDialog.dismiss();
-                            onSignupFailed();
+                            Toast.makeText(getActivity(), "Couldn't sign up. Try again later", Toast.LENGTH_LONG).show();
+                            signUp.setEnabled(true);
 
                         }
                     }
@@ -337,7 +362,7 @@ public class SignUpFragment extends Fragment {
             email_layout.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+        if (password.isEmpty() || password.length() < 4) {
             password_layout.setError("6+ alphanumeric characters");
             valid = false;
         } else {
@@ -372,17 +397,13 @@ public class SignUpFragment extends Fragment {
 
     public void onSignupSuccess() {
         signUp.setEnabled(true);
-        getActivity().startActivity(new Intent(getActivity(), UserMainActivity.class));
+        getActivity().startActivity(new Intent(getActivity(), PictureUploadActivity.class));
         getActivity().finish();
 
 
     }
 
-    public void onSignupFailed() {
-        Toast.makeText(getActivity(), "Couldn't sign up. Try again later", Toast.LENGTH_LONG).show();
 
-        signUp.setEnabled(true);
-    }
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
 
@@ -412,14 +433,18 @@ public class SignUpFragment extends Fragment {
     };
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        mAuth.removeAuthStateListener(mAuthListener);
+    public void onStart() {
+        super.onStart();
+
+        //if(LogInActivity.isSignUpPage() != null && LogInActivity.isSignUpPage())
+        mAuth.addAuthStateListener(mAuthListener);
     }
 }

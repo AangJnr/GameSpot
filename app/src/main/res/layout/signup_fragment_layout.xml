@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:isScrollContainer="true"
+    android:windowSoftInputMode="adjustPan"
+    android:layout_height="match_parent" >
+
+<LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_gradient_background"
     android:weightSum="9"
-    android:gravity="center_horizontal"
     android:fitsSystemWindows="true">
 
     <RelativeLayout
-        android:id="@+id/logo"
+        android:id="@+id/logo_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
@@ -47,15 +52,12 @@
                 android:src="@drawable/ic_play_arrow_white_24dp"
                 android:background="@drawable/rounded_button_background"
                 />
-
-
-
         </LinearLayout>
 
 
 
         <ImageView
-
+            android:id="@+id/logo_2"
             android:layout_width="@dimen/login_logo_size"
             android:layout_height="@dimen/login_logo_size"
             android:src="@drawable/gamespot_2"
@@ -78,6 +80,7 @@
 
 
     <LinearLayout
+        android:id="@+id/lay_creds"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -95,7 +98,8 @@
             android:padding="@dimen/spacing_normal"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:textSize="@dimen/text_size_normal"
+            android:textAllCaps="true"
+            android:textSize="@dimen/text_size_small"
             android:text="@string/sign_up_with_email"
             />
 
@@ -112,7 +116,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
 
             <LinearLayout
@@ -269,21 +273,83 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1.5"
-
     >
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:textSize="12sp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/common_google_signin_btn_text_light"
-        android:textColor="@color/common_google_signin_btn_text_light"
-        android:text="@string/sign_in"
 
-        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:textSize="12sp"
+        android:clickable="true"
+        android:visibility="gone"
+        android:background="@color/white"
+        android:textColor="@color/common_google_signin_btn_text_light"
+        android:text="@string/sign_up_with_google"
+        >
+
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+
+            />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/google_sign_in"
+            android:textColor="@color/text_black_87"
+            android:clickable="false"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/text_size_normal"
+            />
+
+
+    </RelativeLayout>
+
+
+
+
+    <LinearLayout
+        android:id="@+id/bottom_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/have_account_text"
+            android:textSize="11sp"
+            />
+
+        <TextView
+            android:id="@+id/sign_in_text"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:textAllCaps="true"
+            android:layout_marginLeft="@dimen/spacing_half"
+            android:textSize="12sp"
+            />
+
+    </LinearLayout>
 
 </RelativeLayout>
 
 
 
 </LinearLayout>
+</FrameLayout>

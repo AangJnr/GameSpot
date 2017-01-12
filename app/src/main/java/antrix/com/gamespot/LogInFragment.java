@@ -14,11 +14,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,29 +35,36 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import antrix.com.gamespot.userClasses.User;
+import antrix.com.gamespot.userClasses.UserMainActivity;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 
 /**
  * Created by AangJnr on 9/2/16.
  */
 public class LogInFragment extends Fragment {
     View rootView;
-    EditText _emailText, _passwordText;
-    FloatingActionButton login_fab;
-    TextInputLayout email_layout, password_layout;
-    String Merchant_Prefs_Name = "merchant";
-    String Merchant_Id = "uidKey";
-    String Merchant_Name = "nameKey";
-    String Merchant_Email = "emailKey";
-    String Merchant_Phone = "phoneKey";
-    boolean isPasswordVisible = false;
-    SharedPreferences merchant_prefs;
+    TextView sign_up;
+    TextInputLayout email_layout;
+    TextInputLayout password_layout;
+    LinearLayout signIn;
+    ProgressDialog progressDialog;
+    private DatabaseReference users_database;
+
+
+    String email;
+    String password;
+
+    SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference merchants_database;
-    private String email, password;
-    Boolean isUserFragment = false;
-    ImageView visibility2;
+
+    String TAG = "LoginFragment";
+
+    private FirebaseAuth mAuth_2;
+    private FirebaseAuth.AuthStateListener mAuth_2Listener;
+
 
     public LogInFragment() {
         super();
@@ -66,6 +76,14 @@ public class LogInFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mAuth_2 = FirebaseAuth.getInstance();
+        users_database = FirebaseDatabase.getInstance().getReference();
+        sharedPreferences = getDefaultSharedPreferences(getActivity());
+
+
+
+
+
 
 
     }
@@ -75,30 +93,113 @@ public class LogInFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.login_fragment_layout, container, false);
-        mAuth = FirebaseAuth.getInstance();
-        merchants_database = FirebaseDatabase.getInstance().getReference();
-        login_fab = (FloatingActionButton) rootView.findViewById(R.id.merchant_login_fab);
+        signIn = (LinearLayout) rootView.findViewById(R.id.sign_in);
 
-        email_layout = (TextInputLayout) rootView.findViewById(R.id.email_layout);
-        password_layout = (TextInputLayout) rootView.findViewById(R.id.password_layout);
-
-        _emailText = (EditText) rootView.findViewById(R.id.email);
-        _passwordText = (EditText) rootView.findViewById(R.id.password);
+        sign_up = (TextView) rootView.findViewById(R.id.sign_up_text);
+        email_layout = (TextInputLayout) rootView.findViewById(R.id.user_email_layout);
+        password_layout = (TextInputLayout) rootView.findViewById(R.id.user_password_layout);
 
 
-        login_fab.setOnClickListener(new View.OnClickListener() {
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Signing In...");
+
+
+        mAuth_2Listener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                Log.i("LogIn - isSignUpPage()", String.valueOf(LogInActivity.getCurrentPage()));
+                if (user != null && LogInActivity.getCurrentPage() == 0) {
+                    // User is signed in
+
+                    final String uid = user.getUid();
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + uid);
+
+
+
+                    users_database.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            User _user = dataSnapshot.getValue(User.class);
+
+                            if(_user != null)
+
+
+                            editor = sharedPreferences.edit();
+                            editor.putString(ConstantStrings.USER_UID, uid);
+                            editor.putString(ConstantStrings.USER_NAME, _user.getUserName());
+                            editor.putString(ConstantStrings.USER_EMAIL, _user.getUserEmail());
+                            editor.putString(ConstantStrings.USERS_PHONE, _user.getUserPhone());
+                            editor.putString(ConstantStrings.USER_AGE, _user.getUserAge());
+                            editor.putString(ConstantStrings.USER_PHOTO_CLOUD_URL, _user.getUserPhoto());
+                            editor.putBoolean(ConstantStrings.IS_USER_SIGNED_IN, true);
+                            editor.apply();
+
+                            progressDialog.dismiss();
+
+                            onSignInSuccess();
+
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                } else {
+                    // User is signed out
+                    Toast.makeText(getActivity(), "Seems you are signed out. Please sign in", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onAuthStateChanged:signed_out");                }
+                // ...
+            }
+        };
+
+
+
+
+
+
+        signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                email = _emailText.getText().toString();
-                password = _passwordText.getText().toString();
+                if(Utility.checkInternetConnection(getActivity())) {
 
+                    email = email_layout.getEditText().getText().toString();
+                    password = password_layout.getEditText().getText().toString();
 
-                signIn();
+                    if (!signInValidate()) {
+                        Toast.makeText(getActivity(), "Please provide valid info", Toast.LENGTH_LONG).show();
 
+                    } else signIn();
+                }else Toast.makeText(getActivity(), "Please ensure you have an Internet Connection and try again", Toast.LENGTH_SHORT).show();
 
             }
         });
+
+
+
+
+        sign_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((LogInActivity)getActivity()).moveToNext();
+
+            }
+        });
+
+
+
+
+
+
+
 
 
         return rootView;
@@ -133,101 +234,29 @@ public class LogInFragment extends Fragment {
 
 
     public void signIn() {
-
-
-        if (!signInValidate()) {
-            Toast.makeText(getActivity(), "Please check email and password", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        login_fab.setEnabled(false);
-
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        signIn.setEnabled(false);
         progressDialog.show();
 
-
-
-        // TODO: Implement your own authentication logic here.
-        mAuth.signInWithEmailAndPassword(email, password)
+        mAuth_2.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
                         if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail", task.getException());
                             progressDialog.dismiss();
-                            onSignInFailed();
-
-                        } else {
-                            progressDialog.dismiss();
-
-
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                            merchant_prefs = getActivity().getSharedPreferences(Merchant_Prefs_Name,
-                                    Context.MODE_PRIVATE);
-
-                            if (user != null) {
-                                final String uid = user.getUid();
-
-                                final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-                                progressDialog.setIndeterminate(true);
-                                progressDialog.setTitle("Authenticated!");
-                                progressDialog.setMessage("Hello! Please wait...");
-                                progressDialog.show();
-
-
-
-                                merchants_database.child("merchants").child(uid).addListenerForSingleValueEvent(
-                                        new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                                Merchant merchant = dataSnapshot.getValue(Merchant.class);
-
-                                                if(merchant != null){
-                                                    editor = merchant_prefs.edit();
-                                                    editor.putString(Merchant_Id, uid);
-                                                    editor.putString(Merchant_Name, merchant.getName());
-                                                    editor.putString(Merchant_Email, merchant.getEmail());
-                                                    editor.putString(Merchant_Phone, merchant.getPhone());
-                                                    editor.putBoolean("IsSignedIn", true);
-                                                    editor.commit();
-                                                    progressDialog.dismiss();
-                                                    onSignInSuccess();
-                                                }
-
-
-                                                else{
-
-                                                    progressDialog.dismiss();
-                                                    Toast.makeText(getActivity(), "Are you a merchant? " +
-                                                            "Please sign up with OrdStores", Toast.LENGTH_SHORT).show();
-
-                                                }
-
-                                            }
-
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-                                                progressDialog.dismiss();
-                                                Toast.makeText(getActivity(), "Please contact OrdStores", Toast.LENGTH_SHORT).show();
-
-                                            }
-                                        });
-
-
-                            } else {
-                                Toast.makeText(getActivity(), "Please sign in", Toast.LENGTH_LONG).show();
-
-                            }
+                            Toast.makeText(getActivity(), "Couldn't sign in. Try again later", Toast.LENGTH_LONG).show();
+                            signIn.setEnabled(true);
 
                         }
+
+
                     }
                 });
+
+
+
 
 
     }
@@ -236,8 +265,7 @@ public class LogInFragment extends Fragment {
     public boolean signInValidate() {
         boolean valid = true;
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             email_layout.setError("enter a valid email address");
@@ -246,8 +274,8 @@ public class LogInFragment extends Fragment {
             email_layout.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            password_layout.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 4) {
+            password_layout.setError("6+ alphanumeric characters");
             valid = false;
         } else {
             password_layout.setError(null);
@@ -258,15 +286,27 @@ public class LogInFragment extends Fragment {
 
 
     public void onSignInSuccess() {
-        login_fab.setEnabled(true);
-        getActivity().startActivity(new Intent(getActivity(), MerchantMainActivity.class));
+         signIn.setEnabled(true);
+        getActivity().startActivity(new Intent(getActivity(), UserMainActivity.class));
         getActivity().finish();
     }
 
 
-    public void onSignInFailed() {
-        Toast.makeText(getActivity(), "Login failed. Please contact the OrdStores Team", Toast.LENGTH_LONG).show();
-
-        login_fab.setEnabled(true);
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuth_2Listener != null) {
+            mAuth_2.removeAuthStateListener(mAuth_2Listener);
+        }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i("LogIn - isSignUpPage()", String.valueOf(LogInActivity.isSignUpPage()));
+        //if(LogInActivity.isSignUpPage() != null && !LogInActivity.isSignUpPage())
+        mAuth_2.addAuthStateListener(mAuth_2Listener);
+    }
+
+
 }
